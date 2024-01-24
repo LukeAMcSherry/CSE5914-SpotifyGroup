@@ -1,0 +1,4 @@
+#Taking focus from directories
+
+venv/
+__pycache__/
