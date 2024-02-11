@@ -1,0 +1,15 @@
+@keyframes slowIntermittentPulse {
+    0%, 10%, 90%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+  }
+  
+  .title-pulse {
+    animation: slowIntermittentPulse 5s ease-in-out infinite;
+  }
+  
