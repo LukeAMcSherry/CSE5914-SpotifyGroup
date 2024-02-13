@@ -1,8 +1,8 @@
 from flask import Blueprint
 
-home = Blueprint('home', __name__)
+home_blueprint = Blueprint('home', __name__)
 
 
-@home.route("/")
+@home_blueprint.route("/")
 def home():
     pass
