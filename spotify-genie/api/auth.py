@@ -73,7 +73,7 @@ def get_playlist():
         return redirect('/refresh-token')
 
     headers = {
-        'Authorization': f'Bearer {session['access_token']}'
+        'Authorization': f"Bearer {session['access_token']}"
     }
     print(headers)
 
