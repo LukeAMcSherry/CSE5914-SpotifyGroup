@@ -6,7 +6,6 @@ export default function Home() {
         const res = await fetch('/login')
         const data = await res.json()
         window.location.href = data.auth_url
-        console.log(data)
     }
     return (
         <div className="vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#E1F0DA' }}>
