@@ -4,6 +4,7 @@ import auth
 import home
 
 app = Flask(__name__)
+app.secret_key = "dwasdwahdskajwdk"
 app.register_blueprint(auth.auth_blueprint)
 app.register_blueprint(home.home_blueprint)
 

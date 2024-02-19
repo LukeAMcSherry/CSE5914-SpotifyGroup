@@ -16,17 +16,11 @@ TOKEN_URL = 'https://accounts.spotify.com/api/token'
 API_BASE_URL = 'https://api.spotify.com/v1'
 
 auth_blueprint = Blueprint('auth', __name__)
-auth_blueprint.secret_key = "asdnwakjnsdlkj"
-
-
-@auth_blueprint.route('/spotify')
-def spotify():
-    return {'number': 2}
 
 
 @auth_blueprint.route('/login')  # type:ignore
 def login():
-    print("This is the print being run")
+    print("This get pressed")
     scope = 'user-read-private user-read-email user-follow-read'
     params = {
         'client_id': CLIENT_ID,
@@ -36,32 +30,63 @@ def login():
         'show_dialog': True
     }
     auth_url = f"{AUTH_URL}?{urllib.parse.urlencode(params)}"
+    print(auth_url)
+    # this doesn't get redirect to /callback ????
     return jsonify({'auth_url': auth_url})
 
 
-@auth_blueprint.route('/callback')  # type:ignore
+@auth_blueprint.route('/callback', methods=["GET", "POST"])  # type:ignore
 def callback():
-    print("This is being called")
-    if 'error' in request.args:
-        return jsonify({'error': request.args['error']})
-    if 'code' in request.args:
-        print(request)
-        req_body = {
-            'code': request.args['code'],
-            'grant_type': 'authorization_code',
-            'redirect_uri': REDIRECT_URI,
-            'client_id': CLIENT_ID,
-            'client_secret': CLIENT_SECRET
-        }
-
-        response = requests.post(TOKEN_URL, data=req_body)
-        token_info = response.json()
-        session['access_token'] = token_info['access_token']
-        session['refresh_token'] = token_info['refresh_token']
-        # this coresponde to number of seconds the access_token will last
-        session['expires_at'] = datetime.now().timestamp() + \
-            token_info['expires_in']
-        return redirect('/playlist')
+    # handle get and post method in here
+    if request.method == 'POST':
+        print("This is accessed")
+        data = request.json
+        code = data.get('code')
+        if code:
+            token_data = {
+                'grant_type': 'authorization_code',
+                'code': code,
+                'redirect_uri': REDIRECT_URI,
+                'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET
+            }
+            response = requests.post(TOKEN_URL, data=token_data)
+            token_info = response.json()
+            if 'access_token' in token_info:
+                session['access_token'] = token_info['access_token']
+                session['refresh_token'] = token_info['refresh_token']
+                # Save the expiry time
+                session['expires_at'] = datetime.now().timestamp() + \
+                    token_info['expires_in']
+                # Redirect or respond with the necessary information
+                # or you can redirect to a different page
+                print("get to /playlist in post callback")
+                return redirect("/playlist")
+            else:
+                return jsonify({'error': 'Failed to retrieve access token'}), 400
+        else:
+            return jsonify({'error': 'No code provided'}), 400
+    if request.method == 'GET':
+        if 'error' in request.args:
+            return jsonify({'error': request.args['error']})
+        if 'code' in request.args:
+            print(request)
+            req_body = {
+                'code': request.args['code'],
+                'grant_type': 'authorization_code',
+                'redirect_uri': REDIRECT_URI,
+                'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET
+            }
+            response = requests.post(TOKEN_URL, data=req_body)
+            token_info = response.json()
+            session['access_token'] = token_info['access_token']
+            session['refresh_token'] = token_info['refresh_token']
+            # this coresponde to number of seconds the access_token will last
+            session['expires_at'] = datetime.now().timestamp() + \
+                token_info['expires_in']
+            print("got to here for get /callback playlist")
+            return redirect('/playlist')
 
 
 @auth_blueprint.route('/playlist')  # type:ignore
@@ -75,11 +100,11 @@ def get_playlist():
     headers = {
         'Authorization': f'Bearer {session['access_token']}'
     }
-    print(headers)
 
     response = requests.get(
         API_BASE_URL + '/me/following?type=artist', headers=headers)
     playlist = response.json()
+    print("This is here It got to here")
     return jsonify(playlist)
 
 
