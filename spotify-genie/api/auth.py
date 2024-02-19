@@ -7,9 +7,9 @@ import os
 
 
 load_dotenv()
-CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_ID = os.getenv("CLIENT_ID") # see README in this folder for how to set these
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = 'http://localhost:3000/callback'
+REDIRECT_URI = 'http://localhost:3000/callback' # make sure to set this as the redirect uri in the spotify dashboard
 
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
@@ -43,6 +43,7 @@ def login():
 def callback():
     print("This is being called")
     if 'error' in request.args:
+        print("ruh roh")
         return jsonify({'error': request.args['error']})
     if 'code' in request.args:
         print(request)
