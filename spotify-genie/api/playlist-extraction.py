@@ -18,12 +18,12 @@ AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
 API_BASE_URL = 'https://api.spotify.com/v1'
 
-MILLION_PLAYLIST_DATASET = '/Users/alex/Documents/AU23/CSE 5914 Senior Project/spotify_million_playlist_dataset/data/mpd.slice.0-999.json' #absolute pathing
+# MILLION_PLAYLIST_DATASET = '/Users/alex/Documents/AU23/CSE 5914 Senior Project/spotify_million_playlist_dataset/data/mpd.slice.0-999.json' #absolute pathing
 
 # df = pd.read_json(MILLION_PLAYLIST_DATASET)
 # print(df)
-with open(MILLION_PLAYLIST_DATASET, 'r') as file:
-    data = json.load(file)
+# with open(MILLION_PLAYLIST_DATASET, 'r') as file:
+#     data = json.load(file)
 # we're now ready to party
 
 app = Flask(__name__)
@@ -93,30 +93,30 @@ def extract_features():
     # fieldnames = list(json_objects[0].keys())
     
     # 1000 playlists per file
-    for i in range(1000):
-        for j in range(data['playlists'][i]['num_tracks']):
-            print("we are on "+ str(i) + " "+ str(j))
-            print(data['playlists'][i]['tracks'][j]['artist_uri'])
-            response = requests.get(
-                API_BASE_URL + '/artists/' + data['playlists'][i]['tracks'][j]['artist_uri'].split(':', 2)[2], headers=headers)
-            artist = response.json()
-            print(artist)
-            print()
-            time.sleep(5)
-            response = requests.get(
-                API_BASE_URL + '/tracks/' + data['playlists'][i]['tracks'][j]['track_uri'].split(':', 2)[2], headers=headers)
-            artist = response.json()
-            print(artist)
-            print()
-            print()
-            print()
-            time.sleep(5)
+    # for i in range(1000):
+    #     for j in range(data['playlists'][i]['num_tracks']):
+    #         print("we are on "+ str(i) + " "+ str(j))
+    #         print(data['playlists'][i]['tracks'][j]['artist_uri'])
+    #         response = requests.get(
+    #             API_BASE_URL + '/artists/' + data['playlists'][i]['tracks'][j]['artist_uri'].split(':', 2)[2], headers=headers)
+    #         artist = response.json()
+    #         print(artist)
+    #         print()
+    #         time.sleep(5)
+    #         response = requests.get(
+    #             API_BASE_URL + '/tracks/' + data['playlists'][i]['tracks'][j]['track_uri'].split(':', 2)[2], headers=headers)
+    #         artist = response.json()
+    #         print(artist)
+    #         print()
+    #         print()
+    #         print()
+    #         time.sleep(5)
 
 
-    response = requests.get(
-        API_BASE_URL + '/me/following?type=artist', headers=headers)
-    playlist = response.json()
-    return jsonify(playlist)
+    # response = requests.get(
+    #     API_BASE_URL + '/me/following?type=artist', headers=headers)
+    # playlist = response.json()
+    return None
 
 
 @auth_blueprint.route('/playlist')  # type:ignore
