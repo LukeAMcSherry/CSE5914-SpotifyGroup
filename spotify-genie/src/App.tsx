@@ -1,34 +1,23 @@
-import React, { useState, useEffect} from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
 import './App.css';
+import Header from './components/Header';
+import Home from './views/Home';
+import Playlist from './views/Playlist';
+import Callback from './views/Callback';
+
 
 function App() {
-  const [currentTime, setCurrentTime] = useState(0);
-
-  useEffect(() => {
-    fetch('/time').then(res => res.json()).then(data => {
-      setCurrentTime(data.time);
-    });
-  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Crazy? I was crazy once.
-          They put me in a room.
-          A rubber room.
-          A rubber room with rats.
-          They put me in a rubber room with rubber rats.
-          Rubber rats? I hate rubber rats.
-          They make me crazy.
-          Crazy? I was crazy once.
-          They put me in a room….
-        </p>
-        <p>The currentTime is {currentTime}</p>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/playlist' element={<Playlist />} />
+        <Route path='/callback' element={<Callback />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
