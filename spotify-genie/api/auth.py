@@ -53,18 +53,19 @@ def callback():
     tokens = response.json()
     access_token = tokens.get('access_token')
     refresh_token = tokens.get('refresh_token')
+    expires_in = tokens.get('expires_in')
     print(f"This is access token {access_token}")
     # expires_in = tokens.get('expires_in')
     session['access_token'] = access_token
     print(f"This is access token in session {session['access_token']}")
     session['refresh_token'] = refresh_token
-    # session['expires_at'] = datetime.now().timestamp() + expires_in
+    session['expires_at'] = datetime.now().timestamp() + expires_in
     # The rest of the token exchange logic as in your '/callback' route
     # Instead of returning "Authentication Successful!", return the tokens or a success status
     return jsonify({"success": True, "access_token": access_token})
 
 
-@auth_blueprint.route('/playlist')  # type:ignore
+@auth_blueprint.route('/follow-artist')  # type:ignore
 def get_playlist():
     if 'access_token' not in session:
         return redirect('/login')
