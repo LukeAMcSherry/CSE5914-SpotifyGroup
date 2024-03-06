@@ -50,7 +50,9 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### Adding ElasticSearch
 
-Follow the instructions here: https://github.com/elastic/elasticsearch (Use version 8.12.2)
+Follow the instructions here: https://github.com/elastic/elasticsearch (Use version 8.12.2)> Start at the heading `Start Docker`, and stop after you set up Kibana.
+
+In the `.env` file, replace `ELASTIC_PASSWORD`, `KIBANA_PASSWORD`, and `STACK_VERSION` with your local passwords
 
 After completing that, run `docker-compose up -d`
 
