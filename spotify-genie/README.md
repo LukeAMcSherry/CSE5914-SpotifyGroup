@@ -50,7 +50,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### Adding ElasticSearch
 
-Follow the instructions here: https://github.com/elastic/elasticsearch
+Follow the instructions here: https://github.com/elastic/elasticsearch (Use version 8.12.2)
 
 After completing that, run `docker-compose up -d`
 
