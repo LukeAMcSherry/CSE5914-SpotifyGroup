@@ -66,7 +66,7 @@ def callback():
 
 
 @auth_blueprint.route('/follow-artist')  # type:ignore
-def get_playlist():
+def get_follow_artist():
     if 'access_token' not in session:
         return redirect('/login')
 
@@ -82,6 +82,11 @@ def get_playlist():
     playlist = response.json()
     print("This is here It got to here")
     return jsonify(playlist)
+
+
+@auth_blueprint.route('/playlist')
+def get_playlist():
+    pass
 
 
 @auth_blueprint.route('/refresh-token')  # type:ignore

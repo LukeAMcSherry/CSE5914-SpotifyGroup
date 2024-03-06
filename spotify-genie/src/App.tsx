@@ -3,8 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css';
 import Header from './components/Header';
 import Home from './views/Home';
-import Playlist from './views/Playlist';
+import FollowArtist from './views/FollowArtist';
 import Callback from './views/Callback';
+import Playlist from './views/Playlist';
 
 
 function App() {
@@ -14,8 +15,9 @@ function App() {
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/playlist' element={<Playlist />} />
+        <Route path='/follow-artist' element={<FollowArtist />} />
         <Route path='/callback' element={<Callback />} />
+        <Route path='/playlist' element={<Playlist />} />
       </Routes>
     </BrowserRouter>
   );
