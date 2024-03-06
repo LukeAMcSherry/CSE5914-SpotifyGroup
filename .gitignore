@@ -12,3 +12,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+spotify-genie/Datasets/spotify.yaml
+spotify-genie/Datasets/artist_features.csv
+spotify-genie/Datasets/1m.csv
+spotify-genie/Datasets/1M_unique_processed_data.csv
+spotify-genie/Datasets/audio_features.csv
+spotify-genie/Datasets/artist_features.csv
+spotify-genie/Datasets/audio_features.csv
+spotify-genie/Datasets/neededsongs.csv
+spotify-genie/Datasets/track_features.csv

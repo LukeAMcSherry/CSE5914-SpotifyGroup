@@ -2,7 +2,7 @@ FROM python:3.11
 
 WORKDIR /app
 
-RUN pip install flask Flask python-dotenv requests
+RUN pip install flask Flask python-dotenv requests pandas numpy json spotipy spotipy.oauth2 yaml re tqdm multiprocessing time random datetime sklearn matplotlib
 
 COPY . .
 
