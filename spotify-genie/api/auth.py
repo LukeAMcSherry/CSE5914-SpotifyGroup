@@ -1,7 +1,5 @@
-from flask import request, jsonify
-import base64
 import requests
-from flask import Blueprint, jsonify, redirect, request, session, url_for
+from flask import Blueprint, jsonify, redirect, request, session
 import urllib.parse
 from datetime import datetime
 from dotenv import load_dotenv
@@ -66,7 +64,7 @@ def callback():
 
 
 @auth_blueprint.route('/follow-artist')  # type:ignore
-def get_playlist():
+def get_artists():
     if 'access_token' not in session:
         return redirect('/login')
 
@@ -80,8 +78,25 @@ def get_playlist():
     response = requests.get(
         API_BASE_URL + '/me/following?type=artist', headers=headers)
     playlist = response.json()
-    print("This is here It got to here")
     return jsonify(playlist)
+
+
+@auth_blueprint.route('/follow-playlists')  # type:ignore
+def get_playlist():
+    if 'access_token' not in session:
+        return redirect('/login')
+
+    if datetime.now().timestamp() > session['expires_at']:
+        return redirect('/refresh-token')
+
+    headers = {
+        'Authorization': f"Bearer {session['access_token']}"
+    }
+
+    response = requests.get(
+        API_BASE_URL + '/me/playlists', headers=headers)
+    playlist = response.json()
+    return jsonify(playlist.get('items', []))
 
 
 @auth_blueprint.route('/refresh-token')  # type:ignore
@@ -100,7 +115,6 @@ def refresh_token():
         session['access_token'] = new_token_info['access_token']
         session['expires_at'] = datetime.now().timestamp() + \
             new_token_info['expires_in']
-        print("did it get here??")
         return redirect('/playlist')
 
 

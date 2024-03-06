@@ -21,7 +21,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-api": "cd api && venv/bin/flask run --no-debugger -h localhost -p 17490",
-    "start-api-win": "cd api && venv/Scripts/flask run --no-debugger -h localhost -p 17490",
+    "start-api-win": "cd api && venv/bin/flask run --no-debugger -h localhost -p 17490",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
