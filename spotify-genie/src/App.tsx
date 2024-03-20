@@ -36,6 +36,7 @@ function App() {
   }, []);
 
   return (
+    <>
     <BrowserRouter>
       <Header />
       <Routes>
@@ -46,11 +47,11 @@ function App() {
     </BrowserRouter>
     <div className="App">
       <header className="App-header">
-        {/* Update the song title and artist in the header */}
         <h1>Lyrics for "Believer" by Imagine Dragons</h1>
         <p style={{ whiteSpace: 'pre-wrap' }}>{lyrics}</p>
       </header>
     </div>
+  </>
   );
 }
 
