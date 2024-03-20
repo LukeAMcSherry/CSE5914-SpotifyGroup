@@ -1,5 +1,12 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Header from './components/Header';
+import Home from './views/Home';
+import Playlist from './views/Playlist';
+import Callback from './views/Callback';
+
 
 function App() {
   const [lyrics, setLyrics] = useState('');
@@ -29,6 +36,14 @@ function App() {
   }, []);
 
   return (
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/playlist' element={<Playlist />} />
+        <Route path='/callback' element={<Callback />} />
+      </Routes>
+    </BrowserRouter>
     <div className="App">
       <header className="App-header">
         {/* Update the song title and artist in the header */}

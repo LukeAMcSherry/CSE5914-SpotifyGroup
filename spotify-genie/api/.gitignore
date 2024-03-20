@@ -1,4 +1,6 @@
 #Taking focus from directories
 
+.env
 venv/
 __pycache__/
+.env

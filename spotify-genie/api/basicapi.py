@@ -1,8 +1,19 @@
+from flask import Flask
+import auth
+import home
 from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+app.secret_key = "dwasdwahdskajwdk"
+app.register_blueprint(auth.auth_blueprint)
+app.register_blueprint(home.home_blueprint)
+
+# @app.route('/time')
+# def get_current_time():
+#     return {'time': time.time()}
+
 
 GENIUS_ACCESS_TOKEN = "bFIwf618zPphfRGovJYks0NV0cBDbalfyKPUV1AI1Crv28_opQhjPuEIqq47SZBE"
 
