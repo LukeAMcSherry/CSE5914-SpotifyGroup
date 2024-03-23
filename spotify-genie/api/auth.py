@@ -22,7 +22,7 @@ auth_blueprint = Blueprint('auth', __name__)
 def login():
     print(request.args.get('code'))
     print("This get pressed")
-    scope = 'user-read-private user-read-email user-follow-read'
+    scope = 'user-read-private user-read-email user-follow-read playlist-read-private'
     params = {
         'client_id': CLIENT_ID,
         'response_type': 'code',
