@@ -79,14 +79,26 @@ def get_follow_artist():
 
     response = requests.get(
         API_BASE_URL + '/me/following?type=artist', headers=headers)
-    playlist = response.json()
+    follow_artists = response.json()
     print("This is here It got to here")
-    return jsonify(playlist)
+    return jsonify(follow_artists)
 
 
 @auth_blueprint.route('/playlist')
 def get_playlist():
-    pass
+    if 'access_token' not in session:
+        return redirect('/login')
+    if datetime.now().timestamp() > session['expires_at']:
+        return redirect('/refresh-token')
+
+    headers = {
+        'Authorization': f"Bearer {session['access_token']}"
+    }
+
+    response = requests.get(API_BASE_URL + 'me/playlists', headers=headers)
+    playlists = response.json()
+    print("It got to here to return a dictionary of playlist")
+    return jsonify(playlists)
 
 
 @auth_blueprint.route('/refresh-token')  # type:ignore
