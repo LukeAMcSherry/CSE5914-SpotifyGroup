@@ -44,5 +44,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://127.0.0.1:17490"
+  "proxy": "http://localhost:17490"
 }
