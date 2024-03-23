@@ -15,23 +15,6 @@ import random
 import time
 from datetime import datetime
 
-def flatten_json(y):
-    out = {}
-
-    def flatten(x, name=''):
-        if isinstance(x, dict):
-            for a in x:
-                flatten(x[a], name + a + '_')
-        elif isinstance(x, list):
-            for i, a in enumerate(x):
-                flatten(a, name + str(i) + '_')
-        else:
-            out[name[:-1]] = x
-
-    flatten(y)
-    return out
-
-
 # function to divide a list of uris (or ids) into chuncks of 50.
 chunker = lambda y, x: [y[i : i + x] for i in range(0, len(y), x)]
 
