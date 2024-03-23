@@ -214,6 +214,9 @@ services:
       timeout: 10s
       retries: 120
   api: 
+    build:
+      context: ./api
+      dockerfile: Dockerfile
     image: spotify-genie-api
     ports: 
       - "17490:17490"
