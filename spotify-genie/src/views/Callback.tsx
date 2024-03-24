@@ -27,7 +27,7 @@ export default function Callback() {
                     if (data.success) {
                         // Store access_token in localStorage or context for use in subsequent API calls
                         localStorage.setItem('access_token', data.access_token);
-                        navigate('/follow-artist');
+                        navigate('/playlist');
                     } else {
                         console.error('Token exchange was unsuccessful');
                         // Handle unsuccessful token exchange

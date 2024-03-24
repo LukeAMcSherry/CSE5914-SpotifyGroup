@@ -1,7 +1,7 @@
 from flask import request, jsonify
 import base64
 import requests
-from flask import Blueprint, jsonify, redirect, request, session, url_for
+from flask import Blueprint, jsonify, redirect, request, session
 import urllib.parse
 from datetime import datetime
 from dotenv import load_dotenv
@@ -24,7 +24,7 @@ auth_blueprint = Blueprint('auth', __name__)
 def login():
     print(request.args.get('code'))
     print("This get pressed")
-    scope = 'user-read-private user-read-email user-follow-read'
+    scope = 'user-read-private user-read-email playlist-read-private user-follow-read'
     params = {
         'client_id': CLIENT_ID,
         'response_type': 'code',
@@ -88,6 +88,7 @@ def get_follow_artist():
 def get_playlist():
     if 'access_token' not in session:
         return redirect('/login')
+
     if datetime.now().timestamp() > session['expires_at']:
         return redirect('/refresh-token')
 
@@ -95,8 +96,10 @@ def get_playlist():
         'Authorization': f"Bearer {session['access_token']}"
     }
 
-    response = requests.get(API_BASE_URL + 'me/playlists', headers=headers)
+    response = requests.get(API_BASE_URL + '/me/playlists', headers=headers)
+    print(API_BASE_URL + 'me/playlists')
     playlists = response.json()
+    print(playlists)
     print("It got to here to return a dictionary of playlist")
     return jsonify(playlists)
 
