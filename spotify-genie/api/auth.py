@@ -117,6 +117,5 @@ def refresh_token():
             new_token_info['expires_in']
         return redirect('/playlist')
 
-
 if __name__ == "__main__":
     auth_blueprint.run(host='0.0.0.0', debug=True)
