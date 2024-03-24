@@ -4,6 +4,8 @@ export default function Playlist() {
     const [artists, setArtists] = useState<any[]>([]);
     const [fetchedPlaylists, setFetchedPlaylists] = useState<any[]>([]);
     const [selectedPlaylistURI, setSelectedPlaylistURI] = useState<string | null>(null);
+    const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(false);
+    const [recommendations, setRecommendations] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchArtists = async () => {
@@ -49,6 +51,8 @@ export default function Playlist() {
 
     const handlePlaylistSelection = async (playlistURI: string) => {
         try {
+            setLoadingRecommendations(true);
+            setSelectedPlaylistURI(playlistURI);
             const response = await fetch('http://localhost:17490/process_playlist', {
                 method: 'POST',
                 headers: {
@@ -59,20 +63,31 @@ export default function Playlist() {
             if (!response.ok) {
                 throw new Error('Failed to send playlist URI to server');
             }
-            // Handle successful response, if needed
-            console.log('Playlist URI sent successfully');
+            const data = await response.json();
+            setRecommendations(data);
+            setLoadingRecommendations(false);
         } catch (error) {
             console.error('Error:', error);
+            setLoadingRecommendations(false);
         }
     };
-    
 
     return (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', padding: '20px' }}>
-            {selectedPlaylistURI ? (
+            {loadingRecommendations ? (
+                <div style={{ textAlign: 'center' }}>
+                    <h2>Loading Recommendations...</h2>
+                </div>
+            ) : selectedPlaylistURI ? (
                 <div style={{ textAlign: 'center' }}>
                     <h2>Selected Playlist URI:</h2>
                     <p>{selectedPlaylistURI}</p>
+                    <h2>Recommendations:</h2>
+                    <ul>
+                        {recommendations.map((recommendation, index) => (
+                            <li key={index}>{recommendation}</li>
+                        ))}
+                    </ul>
                 </div>
             ) : (
                 fetchedPlaylists.map(playlist => (
@@ -92,5 +107,4 @@ export default function Playlist() {
             )}
         </div>
     );
-    */
 }
