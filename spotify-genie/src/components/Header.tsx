@@ -13,9 +13,8 @@ export default function Header() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div className="navbar-nav ms-auto">
-                        <Link className='nav-link' to='#'>Features</Link>
-                        <Link className='nav-link' to='#'>Pricing</Link>
-                        <Link className='nav-link' to='#'>About</Link>
+                        <Link className='nav-link' to='Features'>Features</Link>
+                        <Link className='nav-link' to='About'>About</Link>
                     </div>
                 </div>
             </div>
