@@ -2,10 +2,20 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import auth
 import home
-from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 import sys
+
+import pandas as pd
+import spotipy
+import spotipy.oauth2 as oauth2
+from spotipy.oauth2 import SpotifyOAuth,SpotifyClientCredentials
+import yaml
+from tqdm import tqdm
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import MinMaxScaler
+import regex
 
 sys.path.insert(0, 'Datasets')
 app = Flask(__name__)
@@ -21,16 +31,7 @@ def process_playlist():
     recommendations = getRecs(playlist_uri)
     return jsonify(recommendations)
 
-import pandas as pd
-import spotipy
-import spotipy.oauth2 as oauth2
-from spotipy.oauth2 import SpotifyOAuth,SpotifyClientCredentials
-import yaml
-from tqdm import tqdm
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import MinMaxScaler
-import regex
+
 
 
 def getRecs(playlist_uri):
@@ -226,8 +227,7 @@ def getRecs(playlist_uri):
     return Fresult['track_name'].to_list()
 
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000, debug=True)
+
 
 GENIUS_ACCESS_TOKEN = "bFIwf618zPphfRGovJYks0NV0cBDbalfyKPUV1AI1Crv28_opQhjPuEIqq47SZBE"
 
@@ -273,5 +273,5 @@ def lyrics():
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=3000, debug=True)

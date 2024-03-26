@@ -2,7 +2,7 @@ FROM python:3.11
 
 WORKDIR /app
 
-RUN pip install flask Flask python-dotenv requests flask_cors pandas spotipy pyyaml regex tqdm scikit-learn 
+RUN pip install flask Flask python-dotenv requests flask_cors pandas spotipy pyyaml regex tqdm scikit-learn bs4
 
 COPY . .
 
