@@ -28,8 +28,11 @@ app.register_blueprint(home.home_blueprint)
 def process_playlist():
     playlist_uri = request.json['playlist_uri']
     print("Received playlist URI:", playlist_uri)
-    recommendations = getRecs(playlist_uri)
-    return jsonify(recommendations)
+    song_names, artist_names = getRecs(playlist_uri)
+    
+    #return jsonify(song_names)
+    songs_with_artists = [f"{song} - {artist}" for song, artist in zip(song_names, artist_names)]
+    return jsonify(songs_with_artists)
 
 
 
@@ -224,7 +227,7 @@ def getRecs(playlist_uri):
         result['artist_name'] = df.iloc[i].artist_name
         result['similarity'] = df.iloc[i].similarity
         Fresult=pd.concat([Fresult,result],axis=0)
-    return Fresult['track_name'].to_list()
+    return Fresult['track_name'].to_list(), Fresult['artist_name'].to_list()
 
 
 
@@ -252,6 +255,7 @@ def scrape_lyrics(url):
 
 @app.route('/lyrics', methods=['POST'])
 def lyrics():
+    
     data = request.json
     song_title = data['title']
     artist_name = data['artist']
@@ -272,6 +276,8 @@ def lyrics():
             return jsonify({'error': 'No lyrics found'}), 404
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
+    
+    
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000, debug=True)
+    app.run(host='0.0.0.0', port=14790, debug=True)

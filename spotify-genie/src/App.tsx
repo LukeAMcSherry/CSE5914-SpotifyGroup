@@ -9,7 +9,10 @@ import Callback from './views/Callback';
 
 
 function App() {
+
+  {/*
   const [lyrics, setLyrics] = useState('');
+
 
   useEffect(() => {
     const getLyrics = async () => {
@@ -34,6 +37,7 @@ function App() {
 
     getLyrics();
   }, []);
+*/}
 
   return (
     <>
@@ -45,12 +49,13 @@ function App() {
         <Route path='/callback' element={<Callback />} />
       </Routes>
     </BrowserRouter>
+    {/*
     <div className="App">
       <header className="App-header">
-        <h1>Lyrics for "Believer" by Imagine Dragons</h1>
+        <h1>Lyrics</h1>
         <p style={{ whiteSpace: 'pre-wrap' }}>{lyrics}</p>
       </header>
-    </div>
+  </div>*/}
   </>
   );
 }

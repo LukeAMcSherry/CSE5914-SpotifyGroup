@@ -6,6 +6,7 @@ export default function Playlist() {
     const [selectedPlaylistURI, setSelectedPlaylistURI] = useState<string | null>(null);
     const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(false);
     const [recommendations, setRecommendations] = useState<string[]>([]);
+    const [lyrics, setLyrics] = useState('');
 
     useEffect(() => {
         const fetchArtists = async () => {
@@ -66,11 +67,37 @@ export default function Playlist() {
             const data = await response.json();
             setRecommendations(data);
             setLoadingRecommendations(false);
+            console.log(data[0], data[1]);
+            if (data.length > 0) {
+                const firstRecommendation = data[0]; // This is a string like "Song Name - Artist Name"
+                fetchLyrics(firstRecommendation); // Adjust fetchLyrics to handle this format
+            }
         } catch (error) {
             console.error('Error:', error);
             setLoadingRecommendations(false);
         }
     };
+
+    const fetchLyrics = async (songWithArtist: string) => {
+        const [songName, artistName] = songWithArtist.split(" - "); // Split the string to get song name and artist name
+        try {
+            const response = await fetch('/lyrics', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title: songName, artist: artistName }),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch lyrics');
+            }
+            const data = await response.json();
+            setLyrics(data.lyrics);
+        } catch (error) {
+            console.error('Failed to fetch lyrics:', error);
+        }
+    };
+
 
     return (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', padding: '20px' }}>
@@ -88,6 +115,15 @@ export default function Playlist() {
                             <li key={index}>{recommendation}</li>
                         ))}
                     </ul>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', padding: '20px' }}>
+                        {/* Displaying playlists and recommendations as before */}
+                        {lyrics && (
+                            <div style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
+                                <h2>Lyrics</h2>
+                                <p style={{ whiteSpace: 'pre-wrap' }}>{lyrics}</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             ) : (
                 fetchedPlaylists.map(playlist => (
