@@ -13,3 +13,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 spotify-genie/api/1M_unique_processed_data.csv
+
+spotify-genie/api/sentiment_model.h5
+spotify-genie/api/tokenizer.pickle
