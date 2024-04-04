@@ -81,6 +81,7 @@ export default function Playlist() {
         }
     };
 
+
     
     const fetchLyrics = async (songWithArtist: string) => {
         const [songName, artistName] = songWithArtist.split(" - "); // Split the string to get song name and artist name

@@ -43,6 +43,11 @@ def process_playlist():
     #return jsonify(song_names)
     songs_with_artists = [f"{song} - {artist}" for song, artist in zip(song_names, artist_names)]
     return jsonify(songs_with_artists)
+    song_names, artist_names = getRecs(playlist_uri)
+    
+    #return jsonify(song_names)
+    songs_with_artists = [f"{song} - {artist}" for song, artist in zip(song_names, artist_names)]
+    return jsonify(songs_with_artists)
 
 
 
@@ -321,4 +326,4 @@ def sentiment_analysis():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=17490, debug=True)
+    app.run(host='0.0.0.0', port=14790, debug=True)
