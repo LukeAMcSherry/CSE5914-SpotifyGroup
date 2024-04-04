@@ -16,6 +16,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 import regex
+from flask import Flask, request, jsonify
+import pickle  # Import pickle for loading the tokenizer
+from tensorflow.keras.models import load_model  # Import load_model to load your trained model
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+
+#from flask import Flask, request, jsonify
+#import pickle
+#from tensorflow.keras.models import load_model
+#from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 sys.path.insert(0, 'Datasets')
 app = Flask(__name__)
@@ -28,8 +38,11 @@ app.register_blueprint(home.home_blueprint)
 def process_playlist():
     playlist_uri = request.json['playlist_uri']
     print("Received playlist URI:", playlist_uri)
-    recommendations = getRecs(playlist_uri)
-    return jsonify(recommendations)
+    song_names, artist_names = getRecs(playlist_uri)
+    
+    #return jsonify(song_names)
+    songs_with_artists = [f"{song} - {artist}" for song, artist in zip(song_names, artist_names)]
+    return jsonify(songs_with_artists)
 
 
 
@@ -224,7 +237,7 @@ def getRecs(playlist_uri):
         result['artist_name'] = df.iloc[i].artist_name
         result['similarity'] = df.iloc[i].similarity
         Fresult=pd.concat([Fresult,result],axis=0)
-    return Fresult['track_name'].to_list()
+    return Fresult['track_name'].to_list(), Fresult['artist_name'].to_list()
 
 
 
@@ -252,6 +265,7 @@ def scrape_lyrics(url):
 
 @app.route('/lyrics', methods=['POST'])
 def lyrics():
+    
     data = request.json
     song_title = data['title']
     artist_name = data['artist']
@@ -272,6 +286,39 @@ def lyrics():
             return jsonify({'error': 'No lyrics found'}), 404
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
+    
+    
+#For sentiment Analysis
+
+
+
+# Load the saved model
+model = load_model('sentiment_model.h5')
+
+# Load the tokenizer
+with open('tokenizer.pickle', 'rb') as handle:
+    tokenizer = pickle.load(handle)
+
+MAX_SEQUENCE_LENGTH = 300
+
+def preprocess_text(text):
+    sequence = tokenizer.texts_to_sequences([text])
+    padded_sequence = pad_sequences(sequence, maxlen=MAX_SEQUENCE_LENGTH)
+    return padded_sequence
+
+def predict_sentiment(text):
+    processed_text = preprocess_text(text)
+    prediction = model.predict(processed_text)[0]
+    sentiment = 'Positive' if prediction > 0.5 else 'Negative'
+    return sentiment
+
+@app.route('/predict_sentiment', methods=['POST'])
+def sentiment_analysis():
+    data = request.get_json()
+    lyrics = data['lyrics']
+    sentiment = predict_sentiment(lyrics)
+    return jsonify({'sentiment': sentiment})
+
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000, debug=True)
+    app.run(host='0.0.0.0', port=17490, debug=True)

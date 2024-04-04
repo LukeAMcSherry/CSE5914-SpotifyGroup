@@ -6,6 +6,9 @@ export default function Playlist() {
     const [selectedPlaylistURI, setSelectedPlaylistURI] = useState<string | null>(null);
     const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(false);
     const [recommendations, setRecommendations] = useState<string[]>([]);
+    const [lyrics, setLyrics] = useState('');
+    const [sentiment, setSentiment] = useState('');
+    const [sentiments, setSentiments] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchArtists = async () => {
@@ -51,6 +54,7 @@ export default function Playlist() {
 
     const handlePlaylistSelection = async (playlistURI: string) => {
         try {
+            setSentiment('');
             setLoadingRecommendations(true);
             setSelectedPlaylistURI(playlistURI);
             const response = await fetch('http://localhost:17490/process_playlist', {
@@ -66,12 +70,88 @@ export default function Playlist() {
             const data = await response.json();
             setRecommendations(data);
             setLoadingRecommendations(false);
+            if (data.length > 0) {
+                const firstRecommendation = data[4]; // This is a string like "Song Name - Artist Name"
+                fetchLyrics(firstRecommendation); // Adjust fetchLyrics to handle this format
+                fetchAllLyricsAndSentiments();
+            }
         } catch (error) {
             console.error('Error:', error);
             setLoadingRecommendations(false);
         }
     };
 
+    
+    const fetchLyrics = async (songWithArtist: string) => {
+        const [songName, artistName] = songWithArtist.split(" - "); // Split the string to get song name and artist name
+        try {
+            const lyricsResponse = await fetch('/lyrics', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title: songName, artist: artistName }),
+            });
+            if (!lyricsResponse.ok) {
+                throw new Error('Failed to fetch lyrics');
+            }
+            const lyricsData = await lyricsResponse.json();
+            setLyrics(lyricsData.lyrics);
+    
+            // Now, fetch the sentiment of the lyrics
+            const sentimentResponse = await fetch('/predict_sentiment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ lyrics: lyricsData.lyrics }),
+            });
+            if (!sentimentResponse.ok) {
+                throw new Error('Failed to analyze sentiment');
+            }
+            const sentimentData = await sentimentResponse.json();
+            setSentiment(sentimentData.sentiment);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const fetchAllLyricsAndSentiments = async () => {
+        setLoadingRecommendations(true); // Assuming you start this process after selecting a playlist
+        const newSentiments: string[] = []; // Temporary storage for sentiments
+        for (const recommendation of recommendations) {
+            const [songName, artistName] = recommendation.split(" - ");
+            try {
+                const lyricsResponse = await fetch('/lyrics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title: songName, artist: artistName }),
+                });
+                if (!lyricsResponse.ok) {
+                    throw new Error('Failed to fetch lyrics');
+                }
+                const lyricsData = await lyricsResponse.json();
+                const sentimentResponse = await fetch('/predict_sentiment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ lyrics: lyricsData.lyrics }),
+                });
+                if (!sentimentResponse.ok) {
+                    throw new Error('Failed to analyze sentiment');
+                }
+                const sentimentData = await sentimentResponse.json();
+                newSentiments.push(sentimentData.sentiment); // Add to temporary storage
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        setSentiments(newSentiments); // Update state with all fetched sentiments
+        setLoadingRecommendations(false); // End loading state
+    };
     return (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', padding: '20px' }}>
             {loadingRecommendations ? (
@@ -88,6 +168,27 @@ export default function Playlist() {
                             <li key={index}>{recommendation}</li>
                         ))}
                     </ul>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', padding: '20px' }}>
+                        {/* Displaying playlists and recommendations as before */}
+                        {lyrics && (
+                            <div style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
+                                <h2>Lyrics</h2>
+                                <p style={{ whiteSpace: 'pre-wrap' }}>{lyrics}</p>
+                                {sentiment && <p>Sentiment: {sentiment}</p>}
+                            </div>
+                        )}
+                        {
+                            sentiments.length > 0 && (
+                                <div style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
+                                    <h2>Sentiments</h2>
+                                    {sentiments.map((sentiment, index) => (
+                                        <p key={index}>Song {index + 1} Sentiment: {sentiment}</p>
+                                    ))}
+                                </div>
+                            )
+                        }
+                        
+                    </div>
                 </div>
             ) : (
                 fetchedPlaylists.map(playlist => (
@@ -108,3 +209,4 @@ export default function Playlist() {
         </div>
     );
 }
+
