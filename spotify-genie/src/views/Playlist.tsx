@@ -73,7 +73,7 @@ export default function Playlist() {
             if (data.length > 0) {
                 const firstRecommendation = data[4]; // This is a string like "Song Name - Artist Name"
                 fetchLyrics(firstRecommendation); // Adjust fetchLyrics to handle this format
-                fetchAllLyricsAndSentiments();
+                fetchAllLyricsAndSentiments(data);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -117,11 +117,13 @@ export default function Playlist() {
         }
     };
 
-    const fetchAllLyricsAndSentiments = async () => {
-        setLoadingRecommendations(true); // Assuming you start this process after selecting a playlist
-        const newSentiments: string[] = []; // Temporary storage for sentiments
-        for (const recommendation of recommendations) {
-            const [songName, artistName] = recommendation.split(" - ");
+    const fetchAllLyricsAndSentiments = async (songWithArtist: string[]) => {
+        
+        setLoadingRecommendations(true); // Assuming this starts the process after selecting a playlist
+        const newSentiments = []; // Temporary storage for sentiments
+        // Use let for variable declaration in the loop
+        for (let i = 0; i < 100; i++) {
+            const [songName, artistName] = songWithArtist[i].split(" - ");
             try {
                 const lyricsResponse = await fetch('/lyrics', {
                     method: 'POST',
@@ -145,6 +147,7 @@ export default function Playlist() {
                     throw new Error('Failed to analyze sentiment');
                 }
                 const sentimentData = await sentimentResponse.json();
+                console.log(sentimentData.sentiment)
                 newSentiments.push(sentimentData.sentiment); // Add to temporary storage
             } catch (error) {
                 console.error('Error:', error);
@@ -153,6 +156,7 @@ export default function Playlist() {
         setSentiments(newSentiments); // Update state with all fetched sentiments
         setLoadingRecommendations(false); // End loading state
     };
+    
     return (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', padding: '20px' }}>
             {loadingRecommendations ? (
