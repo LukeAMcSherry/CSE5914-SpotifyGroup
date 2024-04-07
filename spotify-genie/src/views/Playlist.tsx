@@ -71,9 +71,8 @@ export default function Playlist() {
             setRecommendations(data);
             setLoadingRecommendations(false);
             if (data.length > 0) {
-                const firstRecommendation = data[4]; // This is a string like "Song Name - Artist Name"
-                fetchLyrics(firstRecommendation); // Adjust fetchLyrics to handle this format
-                fetchAllLyricsAndSentiments(data);
+                //fetchAllLyricsAndSentiments(data);
+                fetchAllLyricsAndSentiments(data.slice(0, 300));
             }
         } catch (error) {
             console.error('Error:', error);
@@ -117,43 +116,42 @@ export default function Playlist() {
         }
     };
 
+
     const fetchAllLyricsAndSentiments = async (songWithArtist: string[]) => {
-        
         setLoadingRecommendations(true); // Assuming this starts the process after selecting a playlist
-        const newSentiments = []; // Temporary storage for sentiments
-        // Use let for variable declaration in the loop
-        for (let i = 0; i < 100; i++) {
-            const [songName, artistName] = songWithArtist[i].split(" - ");
+        
+        const fetchPromises = songWithArtist.map(async (songArtistPair) => {
+            const [songName, artistName] = songArtistPair.split(" - ");
             try {
                 const lyricsResponse = await fetch('/lyrics', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title: songName, artist: artistName }),
                 });
-                if (!lyricsResponse.ok) {
-                    throw new Error('Failed to fetch lyrics');
-                }
+                if (!lyricsResponse.ok) throw new Error('Failed to fetch lyrics');
+                
                 const lyricsData = await lyricsResponse.json();
                 const sentimentResponse = await fetch('/predict_sentiment', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ lyrics: lyricsData.lyrics }),
                 });
-                if (!sentimentResponse.ok) {
-                    throw new Error('Failed to analyze sentiment');
-                }
+                if (!sentimentResponse.ok) throw new Error('Failed to analyze sentiment');
+                
                 const sentimentData = await sentimentResponse.json();
                 console.log(sentimentData.sentiment)
-                newSentiments.push(sentimentData.sentiment); // Add to temporary storage
+                return sentimentData.sentiment;
             } catch (error) {
-                console.error('Error:', error);
+                //console.error('Error:', error);
+                console.log("null")
+                return "null"; // Return null or a default value in case of an error
             }
-        }
-        setSentiments(newSentiments); // Update state with all fetched sentiments
+        });
+    
+        const results = await Promise.allSettled(fetchPromises);
+        const sentiments = results.map(result => result.status === 'fulfilled' ? result.value : null).filter(sentiment => sentiment !== null);
+        
+        setSentiments(sentiments); // Update state with all fetched sentiments
         setLoadingRecommendations(false); // End loading state
     };
     
