@@ -1,0 +1,10 @@
+archives/
+build/
+Exports/
+.venv/
+*.egg-info/
+tags
+*.csv
+*.log
+dist/
+__pycache__/
