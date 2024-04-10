@@ -2,10 +2,11 @@ import requests
 import json
 
 url = "http://localhost:9200/song/_doc/1"
+crt = "http_ca.crt"
 
 
 def enter_info(json_data):
-    response = requests.post(url, json=json_data)
+    response = requests.post(url, json=json_data, cert=crt)
 
     if response.status_code == 201:
         print("Document posted to successfully.")
