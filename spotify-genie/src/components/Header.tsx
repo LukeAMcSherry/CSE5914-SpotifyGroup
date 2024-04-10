@@ -15,6 +15,7 @@ export default function Header() {
                     <div className="navbar-nav ms-auto">
                         <Link className='nav-link' to='Features'>Features</Link>
                         <Link className='nav-link' to='About'>About</Link>
+                        <Link className='nav-link' to='Test'>Test</Link>
                     </div>
                 </div>
             </div>

@@ -7,9 +7,7 @@ import Playlist from './views/Playlist';
 import Callback from './views/Callback';
 import Features from './views/Features';
 import About from './views/About';
-
-
-
+import Test from './views/Test';
 
 function App() {
 
@@ -22,6 +20,7 @@ function App() {
         <Route path='/callback' element={<Callback />} />
         <Route path='/features' element={<Features />} />
         <Route path='/about' element={<About />} />
+        <Route path='/Test' element={<Test/>} />
       </Routes>
     </BrowserRouter>
   );
