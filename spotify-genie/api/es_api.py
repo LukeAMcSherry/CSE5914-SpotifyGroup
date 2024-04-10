@@ -1,12 +1,15 @@
 import requests
 import json
+import es_fill
 
-url = "http://localhost:9200/song/_doc/1"
+url = "https://localhost:9200/song/_doc/"
 crt = "http_ca.crt"
 
 
-def enter_info(json_data):
-    response = requests.post(url, json=json_data, cert=crt)
+def enter_info(json_data, id):
+    url_to_use = url + str(id)
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, json=json_data, verify=False, headers=headers, auth=("elastic", "4vlAqTiZw31UapG8IH8D") )
 
     if response.status_code == 201:
         print("Document posted to successfully.")
