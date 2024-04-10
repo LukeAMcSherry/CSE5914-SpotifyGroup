@@ -13,6 +13,27 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 import regex
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import auth
+import home
+import requests
+import sys
+
+import pandas as pd
+import spotipy
+import spotipy.oauth2 as oauth2
+from spotipy.oauth2 import SpotifyOAuth,SpotifyClientCredentials
+import yaml
+from tqdm import tqdm
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import MinMaxScaler
+import regex
+from flask import Flask, request, jsonify
+import pickle  # Import pickle for loading the tokenizer
+# from tensorflow.keras.models import load_model  # Import load_model to load your trained model
+# from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 song_recommendations = pd.read_csv('test.csv')
 
@@ -30,11 +51,19 @@ def get_recommendations():
 
 @app.route('/process_playlist', methods=['POST'])
 def process_playlist():
-    
     playlist_uri = request.json['playlist_uri']
     print("Received playlist URI:", playlist_uri)
-    recommendations = getRecs(playlist_uri)
-    return jsonify(recommendations)
+    song_names, artist_names, song_uri = getRecs(playlist_uri)
+    
+    #return jsonify(song_names)
+    songs_with_artists = [f"{song} - {artist}" for song, artist in zip(song_names, artist_names)]
+    return jsonify(songs_with_artists)
+
+    song_names, artist_names = getRecs(playlist_uri)
+    
+    #return jsonify(song_names)
+    songs_with_artists = [f"{song} - {artist}" for song, artist in zip(song_names, artist_names)]
+    return jsonify(songs_with_artists)
 
 def getRecs(playlist_uri):
 
@@ -198,6 +227,7 @@ def getRecs(playlist_uri):
         result['artist_name'] = df.iloc[i].artist_name
         result['similarity'] = df.iloc[i].similarity
         result['album_uri'] = df.iloc[i].album_uri
+        result['track_uri'] = df.iloc[i].track_uri
         Fresult=pd.concat([Fresult,result],axis=0)
 
     # Return the final dataframe
@@ -226,7 +256,7 @@ def getRecs(playlist_uri):
             continue
     """
 
-    return Fresult['artist_name'].to_list()
+    return Fresult['track_name'].to_list(), Fresult['artist_name'].to_list(), Fresult['track_uri'].to_list()
 
 
 if __name__ == "__main__":
