@@ -13,6 +13,8 @@ npm install -g yarn
 npm install
 ```
 
+Additionally, receive the processed dataset contained in the file `1M_unique_processed_data.csv`, sentiment model `sentiment_model.h5` and tokenizer `tokenizer.pickle`, from either the group's google drive or from a group member. Place that in the `api` folder. Then, replace the `acoustic` column name (in the top row) with the word `acousticness` in the dataset. Next, we can move onto spotify setup.
+
 ### Spotify Setup
 To setup Spotify integration, you first need a Spotify for Developers (https://developer.spotify.com/) account. Create one, and then navigate to your dashboard (click on your SfD username to navigate to this). On your dashbord, click the "Create app" button. Edit your app to have a name and a description, as well as ensuring it is marked as a "Web API".
 
