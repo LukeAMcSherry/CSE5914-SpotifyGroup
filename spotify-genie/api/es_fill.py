@@ -29,7 +29,7 @@ def enter_info(json_data, id):
         print("Response:", response.text)
         return 1
 
-with open('1M_unique_processed_data.csv') as file:
+with open('1M_unique_processed_data.csv', errors='replace') as file:
     random.seed('69420')
     heading = next(file) 
 
@@ -37,7 +37,6 @@ with open('1M_unique_processed_data.csv') as file:
     i = 1
     
     for row in reader_obj: 
-        rnd = random.randint(0,100)
         query = { 
             "artist_name": row[0],
             "track_uri": row[1],
@@ -45,7 +44,7 @@ with open('1M_unique_processed_data.csv') as file:
             "track_name": row[3],
             "album_uri": row[4],
             "album_name": row[6],
-            "sentiment": rnd,
+            "sentiment": row[25],
         }
         x = threading.Thread(target=run_thread, args=(query, i))
         while running > 10:
